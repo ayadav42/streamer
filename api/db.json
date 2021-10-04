@@ -1,0 +1,25 @@
+{
+  "streams": [
+    {
+      "title": "MyStream",
+      "description": "funny",
+      "id": 1
+    },
+    {
+      "title": "Other Stream",
+      "description": "another stream",
+      "id": 2
+    },
+    {
+      "title": "Stream3",
+      "description": "3reee",
+      "id": 3
+    },
+    {
+      "title": "Stream With User ID",
+      "description": "Made by me",
+      "userId": "116866451185813602491",
+      "id": 4
+    }
+  ]
+}

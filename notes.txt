@@ -1,0 +1,97 @@
+react-router            Core nav library - we don't install this manually
+react-router-dom        Wrapper or react-router, for dom-based apps (We want this!)
+react-router-native     Wrapper or react-router, for react-native apps
+react-router-redux      Bindings b/w redux and react-router (not neccessary)
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+<Route path="/page" exact component={PageOne}/> //exact ===
+<Route path="/page/two" component={PageTwo}/>   //without exact, .contains("/abc") or .contains("/)
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Do not use anchor tags for routing
+1) You click <a href="/pagetwo">Go to page 2</a>
+2) Browser makes request to localhost:3000/pagetwo
+3) Server responds with index.html file first
+4) Browser recevies the new index.html, DUMPS THE OLD (All react/redux state data lost!)
+5) JS scripts in index.html are executed
+6) App restarts
+
+What to do instead? use <Link to="/pagetwo"></Link>
+1) User clicks Link tag
+2) React Router prevents the browser from navigating to the new page and fetching new index.html file
+3) URL still changes
+4) 'History' sees updated URL, takes URL and sends it to BrowserRouter
+5) BrowserRouter communicates the URL to Route components
+6) Route components rerender to show new set of components
+
+== SPA Single Page App (Only loading the index.html once, we just show and hide stuff)
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+BrowserRouter- uses everything after the Top Level Domain (TLD) : .com, .net or port as 'path' : localhost:3000/pagetwo
+HashRouter- Uses everyhting after a # as the 'path' : localhost:3000/#/pagetwo
+MemoryRouter - Doesn't use URL to track navigation : localhost:3000/
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+For a path that doesn't have a response, the react-server sends a index.html instead(The most important part), not 404. 
+Had this not been the case, no advantage of even having BrowserRouter
+So with a react server
+1) navigate to localhost:3000/pagetwo
+2) index.html is served, browser downloads linked js
+3) bundle.js is one of them that contains all our code
+4) BrowserRouter sees History and finds it needs to go to '/pagetwo', so it does.
+
+If you use '#' in the URL, server only considers the part before #, everything after is for client. In this case, HashRouter
+gives more flexibility since even a request to 'localhost:3000/#/asfakjshf' hits 'localhost:3000/', not special confirguration
+needed to avoid 404!
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Handling Inputs Without redux
+
+^ = upwards arrow
+             
+__Class_Component___                  ____DOM______________________
+|   State          |    -------->     | value      | Input Element|
+|___^setState______|    <--------     |_onChange___|______________|
+
+
+With Redux Form
+
+__Redux Store______                              __Component______           ___DOM__________________
+|                  |                            |                 |         |           |           | 
+| Redux Form -------------> Redux Form -------------> props -------------------> value  |           | 
+| Reducer          |        mapStateToProps     |                 |         |           |           | 
+|   ^              |                            |                 |         |___________|   Input   | 
+|   |              |                            |                 |         |           |   Element | 
+|   ----------------------- Redux Form <------------- handler <--------------- onChange |           | 
+|__________________|        Action Creator      |_________________|         |___________|___________|
+
+
+------------------------Redux Form---------------------------------
+                  does this automatically
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+React Portal
+
+Use when:
+1) to create a modal
+2) to show html that isn't already a part of your app: ex. to show server-side rendered html
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+renderAction(){
+    return <button className="ui button negative" onClick={this.onDelete()}>Delete</button>
+} //'this' will refer to the element that will contain button in this case
+
+vs.
+
+renderAction(){
+    return <button className="ui button negative" onClick={() => this.onDelete()}>Delete</button>
+} //since 'this' is used in the body of function, it finds 'this' in outer scope which refers to the class.
